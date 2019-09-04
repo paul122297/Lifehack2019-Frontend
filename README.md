@@ -1,4 +1,11 @@
-# cd-barrera-frontend
+# Vue Starter Project with Toolbar and side bar
+
+### Packages
+```
+axios
+moment
+vee-validate
+```
 
 ## Project setup
 ```
