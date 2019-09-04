@@ -3,7 +3,11 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import authentication from './modules/authentication';
+import authentication from './modules/authentication'
+import BrandModule from './modules/brand'
+import CategoryModule from './modules/category'
+
+
 
 export default new Vuex.Store({
   state: {},
@@ -11,5 +15,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     auth: authentication,
+    brand: BrandModule,
+    category: CategoryModule
   }
 })
