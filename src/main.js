@@ -9,9 +9,24 @@ import axios from 'axios'
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = 'http://cdbarrera.test/'
+axios.defaults.baseURL = 'http://ec2-3-0-177-23.ap-southeast-1.compute.amazonaws.com/'
 
 initialize(store, router, axios);
+
+import Echo from 'laravel-echo'
+
+window.Pusher = require('pusher-js');
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: 'ITMSPNP2019CRAME',
+  cluster: 'mt1',
+  //encrypted: false,
+  wsHost: 'ec2-3-0-177-23.ap-southeast-1.compute.amazonaws.com',
+  wsPort: 6001,
+  disableStats: true,
+  enabledTransports: ['ws']
+});
 
 new Vue({
   router,

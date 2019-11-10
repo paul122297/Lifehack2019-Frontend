@@ -4,10 +4,10 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 import authentication from './modules/authentication'
-import BrandModule from './modules/brand'
-import CategoryModule from './modules/category'
-
-
+import EventModule from './modules/event'
+import HospitalModule from './modules/hospital'
+import ChatModule from './modules/chats'
+import AccountModule from './modules/accounts'
 
 export default new Vuex.Store({
   state: {},
@@ -15,7 +15,9 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     auth: authentication,
-    brand: BrandModule,
-    category: CategoryModule
+    event: EventModule,
+    hospital: HospitalModule,
+    chat: ChatModule,
+    accounts: AccountModule
   }
 })

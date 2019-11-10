@@ -95,7 +95,7 @@
     mounted () {
       this.$validator.localize('en', this.dictionary)
       var vm = this
-        bus.$on('editCategory', function (value) {
+        bus.$on('editEvent', function (value) {
         vm.dialog = true
         vm.form.id = value.id
         vm.form.name = value.name
@@ -113,7 +113,7 @@
       },
         submitBrand(){
           this.loading = true
-            this.$store.dispatch('updateCategory', this.form)
+            this.$store.dispatch('updateBrand', this.form)
                 .then((response) => {
                     this.snackbar = true
                     this.dialog = false

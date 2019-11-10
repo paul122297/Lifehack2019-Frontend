@@ -22,7 +22,7 @@
                 dark
                 flat
               >
-                <v-toolbar-title>CS Barrera</v-toolbar-title>
+                <v-toolbar-title>BloodDrive</v-toolbar-title>
                 <v-spacer></v-spacer>
 
               </v-toolbar>
@@ -87,7 +87,16 @@
             .then(response => {
                 this.loader = false
                 this.loading = false
-                this.$router.push({path: '/dashboard'});
+                if (response.data.user.user_type == 'admin') {
+                  this.$router.push({path: '/dashboard'});
+                } else {
+                  this.$store.dispatch('destroyToken')
+                    .then(response => {
+                        this.error_content = 'Action not allowed'
+                        this.admin_error = true
+                        this.loading = false
+                    });
+                }
                 //console.log(response)
             }).catch(error => {
                 this.error_content = error

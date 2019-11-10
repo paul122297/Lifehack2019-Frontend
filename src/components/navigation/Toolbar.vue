@@ -7,7 +7,7 @@
       <v-icon>menu</v-icon>
       </v-app-bar-nav-icon>
       <v-toolbar-title class="white--text">
-          CS Barrera
+          BloodDrive
       </v-toolbar-title>
         <!-- <v-toolbar-title v-else>
           <v-img class="drawer-logo mt-2" width="150" src="../img/Expee-Logo-Reversed.png"/>

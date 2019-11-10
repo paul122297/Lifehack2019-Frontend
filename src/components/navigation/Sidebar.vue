@@ -59,9 +59,8 @@ export default {
             navigations: [
                 {name: 'Dashboard', icon: 'dashboard', route: 'dashboard'},
                 {name: 'Accounts', icon: 'people', route: 'accounts'},
-                {name: 'Brands', icon: 'mdi-clipboard', route: 'brand'},
-                {name: 'Category', icon: 'mdi-collage', route: 'category'},
-                {name: 'Products', icon: 'mdi-package', route: 'product'},
+                {name: 'Events', icon: 'mdi-calendar-multiple-check', route: 'events'},
+                {name: 'Hospital', icon: 'mdi-hospital-building', route: 'hospitals'},
             ],
         }
     },

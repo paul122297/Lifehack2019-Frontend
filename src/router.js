@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './components/authentication/Login'
 import Dashboard from './components/dashboard/Dashboard'
-import Brand from './components/brand/BrandMain'
-import Category from './components/category/CategoryMain'
+import Event from './components/event/EventMain'
+import Hospital from './components/hospital/HospitalMain'
+import Account from './components/account/AccountMain'
 
 Vue.use(Router)
 
@@ -25,17 +26,25 @@ export default new Router({
       }
     },
     {
-      path: '/brand',
-      name: 'brand',
-      component: Brand,
+      path: '/events',
+      name: 'event',
+      component: Event,
       meta: {
         requiresAuth: true,
       }
     },
     {
-      path: '/category',
-      name: 'category',
-      component: Category,
+      path: '/hospitals',
+      name: 'hospital',
+      component: Hospital,
+      meta: {
+        requiresAuth: true,
+      }
+    },
+    {
+      path: '/accounts',
+      name: 'accounts',
+      component: Account,
       meta: {
         requiresAuth: true,
       }

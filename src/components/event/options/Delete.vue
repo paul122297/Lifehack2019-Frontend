@@ -54,7 +54,7 @@ import bus from '../../../event_bus.js'
 
     created () {
         var vm = this
-        bus.$on('brandDelete', function (value) {
+        bus.$on('eventDelete', function (value) {
             vm.deleteDialog = true
             vm.id = value.id
             console.log(value)
