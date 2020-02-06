@@ -30,7 +30,7 @@ const actions = {
     retrieveToken(context, credentials){
         return new Promise((resolve, reject) => {
             axios.post('/api/login', {
-                username: credentials.username,
+                email: credentials.email,
                 password: credentials.password,
             })
             .then(response => {
@@ -43,7 +43,10 @@ const actions = {
                 context.commit('retrieveUser', JSON.stringify(user))
                 resolve(response)
                 //console.log(token)
-  
+                setTimeout(() => {
+                    context.dispatch('accountOnline', user.id)
+                }, 500);
+                
             })
             .catch(error => {
                 reject(error.response.data)
@@ -53,22 +56,25 @@ const actions = {
         destroyToken(context, credentials){
           if(context.getters.loggedIn) {
             return new Promise((resolve, reject) => {
-                axios.post('/api/logout', credentials)
-                .then(response => {
-                    localStorage.removeItem('access_token')
-                    context.commit('destroyToken')
-
-                    localStorage.removeItem('current_user')
-                    context.commit('destroyUser')
-                    resolve(response)
-                })
-                .catch(error => {
-                    localStorage.removeItem('access_token')
-                    context.commit('destroyToken')
-
-                    localStorage.removeItem('current_user')
-                    context.commit('destroyUser')
-                    reject(error)
+            context.dispatch('accountOffline', context.state.currentUser.id)
+            .then(res => {
+                    axios.post('/api/logout', credentials)
+                    .then(response => {
+                        localStorage.removeItem('access_token')
+                        context.commit('destroyToken')
+    
+                        localStorage.removeItem('current_user')
+                        context.commit('destroyUser')
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        localStorage.removeItem('access_token')
+                        context.commit('destroyToken')
+    
+                        localStorage.removeItem('current_user')
+                        context.commit('destroyUser')
+                        reject(error)
+                    })
                 })
             })
           }

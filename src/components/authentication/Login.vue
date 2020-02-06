@@ -33,7 +33,7 @@
                     name="login"
                     prepend-icon="person"
                     type="text"
-                    v-model="form.username"
+                    v-model="form.email"
                   ></v-text-field>
 
                   <v-text-field
@@ -49,7 +49,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                  :disabled="form.username&&form.password ? false : true"
+                  :disabled="form.email&&form.password ? false : true"
                   block 
                   color="primary white--text" 
                   @click="authenticate" 
@@ -74,7 +74,7 @@
         admin_error: false,
         isLoading: false,
         form: {
-          username: '',
+          email: '',
           password: ''
         },
       }
@@ -87,7 +87,7 @@
             .then(response => {
                 this.loader = false
                 this.loading = false
-                if (response.data.user.user_type == 'admin') {
+                if (response.data.user.user_type == 'super_admin') {
                   this.$router.push({path: '/dashboard'});
                 } else {
                   this.$store.dispatch('destroyToken')

@@ -33,6 +33,7 @@ export default {
             },
         }
     },
+
     methods: {
         drawerOpen(){
             bus.$emit('drawerOpen', true)

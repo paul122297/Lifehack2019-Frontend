@@ -13,9 +13,36 @@ const mutations = {
     retrieveAccounts(state, payload){
         state.accounts = payload
     },
-
+    updateAccount(state, payload) {
+        let updateIndex = state.accounts.findIndex(item => item.id === payload.id);
+        Vue.set(state.accounts, updateIndex, payload)
+    }
 };
 const actions = {
+    accountOnline(context, id){
+        return new Promise((resolve, reject) => {
+            axios.put(`/api/account/online/${id}`, {})
+            .then(response => {
+                context.commit('updateAccount', response.data)
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+        })
+    },
+    accountOffline(context, id){
+        return new Promise((resolve, reject) => {
+            axios.put(`/api/account/offline/${id}`, {})
+            .then(response => {
+                context.commit('updateAccount', response.data)
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+        })
+    },
     retrieveAccounts(context){
         return new Promise((resolve, reject) => {
             axios.get(`/api/accounts`)

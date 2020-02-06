@@ -1,8 +1,7 @@
 <template>
     <v-row>
-        <v-col cols="3">
+        <v-col cols="12" lg="3" xl="3" md="4" sm="12">
              <v-card
-                max-width="500"
                 class="mx-auto"
             >
                 <v-toolbar flat>
@@ -41,7 +40,7 @@
 
             </v-card>
         </v-col>
-        <v-col cols="9">
+        <v-col cols="12" xl="9" lg="9" md="8" sm="12">
             <v-card style="">
                 <v-toolbar flat>
                 <v-toolbar-title>{{selectedFriend.name? selectedFriend.name : 'Chat'}}</v-toolbar-title>
@@ -56,7 +55,7 @@
                             <span class="time_date"> {{moment(item.created_at).format('LT')}} | {{moment(item.created_at).format('dddd')}}</span> </div>
                         </div>
 
-                          <div v-else  class="incoming_msg">
+                          <div v-else class="incoming_msg">
                             <div class="received_msg">
                                 <div class="received_withd_msg">
                                 <p>{{item.chat}}</p>
@@ -87,51 +86,32 @@ export default {
       selectedFriend: {},
       message: '',
       loading: false,
-      // chats: [
-      //   { chat: 'Hello Travis Howard', user_id: 1, created_at: 2017-12-22},
-      //   { chat: 'Hi', user_id: 2, created_at: 2017-12-22},
-      //   { chat: 'Hello Travis Howard', user_id: 1, created_at: 2017-12-22},
-      //   { chat: 'Hi', user_id: 2, created_at: 2017-12-22},
-      //   { chat: 'Hello Travis Howard', user_id: 1, created_at: 2017-12-22},
-      //   { chat: 'Hi', user_id: 2, created_at: 2017-12-22},
-      //   { chat: 'Hello Travis Howard', user_id: 1, created_at: 2017-12-22},
-      //   { chat: 'Hi', user_id: 2, created_at: 2017-12-22},
-      //   { chat: 'Hello Travis Howard', user_id: 1, created_at: 2017-12-22},
-      //   { chat: 'Hi', user_id: 2, created_at: 2017-12-22},
-      // ],
+      status: false,
+      users: []
     }),
-  created() {//User_id.Reciever_id
-    
-    //if (this.selectedFriend.id) {
+  created() {
+    this.listenChat()
+  },
+  methods: {
+    listenChat() {
       var userId = this.currentUser.id;
       var receiverId = this.selectedFriend.id;
       console.log(userId, receiverId)
-      
-      //if (this.selectedFriend.id != undefined) {
-        //console.log(`Chat.${this.currentUser.id}.${this.selectedFriend.id}`)
-        window.Echo.channel('Chat.'+ userId)
+        window.Echo.private('Chat.'+ userId)
           .listen('BroadcastChat', (e) => {
-              console.log(e);
-              console.log('Success');
               if (e.chat.receiver_id == userId) {
                 this.$store.commit('pushChat', e.chat)
               }
-              
+              console.log(e)
           })
-      //}
-          //window.Echo.channel(`Chat.${this.selectedFriend.id}.${this.currentUser.id}`)
-          
-    //}
-
         this.getFriends()
-  },
-  methods: {
+    },
     sendChat() {
       let form = {
         receiver_id: this.selectedFriend.id,
         chat: this.message
       }
-    this.loading = true
+      this.loading = true
       this.$store.dispatch('sendChat', form)
         .then(res => {
           this.loading = false

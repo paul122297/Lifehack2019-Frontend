@@ -5,10 +5,10 @@
     </v-flex>
     <v-flex lg12>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
           <BarChart/>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
           <PieChart/>
         </v-col>
         <v-col cols="12">

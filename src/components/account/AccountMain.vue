@@ -20,6 +20,10 @@
                     :search="search"
                     :loading="loading"
                     >
+                    <template v-slot:item.active="{ item }">
+                        <v-chip v-if="item.active" class="overline white--text green" small>Online</v-chip>
+                        <v-chip v-else class="overline" small>Offline</v-chip>
+                    </template>
                     <template v-slot:item.donor_gender="{ item }">
                         <v-chip class="overline" small :color="getColor(item)" dark>{{item.gender}}</v-chip>
                     </template>
@@ -73,6 +77,7 @@ var moment = require('moment')
         loading: false,
         headers: [
           { text: 'Name', value: 'name' },
+          { text: 'Status', value: 'active' },
           { text: 'Blood Type', value: 'blood_type' },
           { text: 'Gender', value: 'donor_gender' },
           { text: 'Age', value: 'age' },
