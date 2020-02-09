@@ -5,13 +5,18 @@ import colors from 'vuetify/lib/util/colors'
 Vue.use(Vuetify);
 
 export default new Vuetify({
+  options: {
+    customProperties: true
+  },
   icons: {
     iconfont: 'mdi',
   },
   theme: {
     themes: {
       light: {
-        primary: colors.red.darken2,
+        backgroundGradientDark: '#D32F2F',
+        backgroundGradientLight: '#E57373',
+        primary: colors.red.darken1,
         // secondary: colors.red,
         // success: '#58c46c',
         // danger: '#ee4b5a',
@@ -29,7 +34,7 @@ export default new Vuetify({
         // pinkO: '#e859aa99'
       },
       dark: {
-        primary: colors.red.darken2,
+        primary: colors.red.lighten2,
       },
     },
   },

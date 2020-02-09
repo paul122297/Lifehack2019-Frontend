@@ -2,43 +2,48 @@
 import axios from 'axios'
 import Vue from 'vue'
 const state  = {
+    hospital: {},
     hospitals: [],
-    transactions: []
+    total: 0
 };
 const getters = {
     retrieveHospitals(state) {
         return state.hospitals
     },
-    retrieveHospitalTransactions(state) {
-        return state.transactions
+    retrieveHospital(state) {
+        return state.hospitals
+    },
+    retrieveTotalHospitals(state) {
+        return state.total
     },
 };
 const mutations = {
-    retrieveHospitals(state, payload){
-        state.hospitals = payload
+    setHospitals(state, payload){
+        state.total = payload.total
+        state.hospitals = payload.data
     },
-    retrieveHospitalTransactions(state, payload) {
-        state.transactions = payload
+    setHospital(state, payload) {
+        state.hospital = payload
     },
     pushHospital(state, payload) {
+        state.total++
         state.hospitals.push(payload)
     },
-
-    // updateBrand(state, payload) {
-    //     let updateIndex = state.events.findIndex(item => item.id === payload.id);
-    //     Vue.set(state.events, updateIndex, payload)
-    // },
-    // deleteBrand(state, id) {
-    //     let deleteIndex = state.events.findIndex(item => item.id === id);
-    //     state.events.splice(deleteIndex, 1)
-    // }
+    updateHospital(state, payload) {
+        let updateIndex = state.hospitals.findIndex(item => item.id === payload.id);
+        Vue.set(state.hospitals, updateIndex, payload)
+    },
+    deleteHospital(state, id) {
+        let deleteIndex = state.hospitals.findIndex(item => item.id === id);
+        state.hospitals.splice(deleteIndex, 1)
+    }
 };
 const actions = {
-    retrieveHospitals(context){
+    retrieveHospitals(context, params){
         return new Promise((resolve, reject) => {
-            axios.get(`/api/hospital`)
+            axios.get(`/api/hospitals`, {params: params})
             .then(response => {
-                context.commit('retrieveHospitals', response.data)
+                context.commit('setHospitals', response.data)
                 resolve(response)
             })
             .catch(error => {
@@ -46,11 +51,23 @@ const actions = {
             })
         }) 
     },
-    retrieveHospitalTransactions(context, id){
+    retrieveHospital(context, id){
         return new Promise((resolve, reject) => {
-            axios.get(`/api/hospital/transactions/${id}`)
+            axios.get(`/api/hospitals/${id}`)
             .then(response => {
-                context.commit('retrieveHospitalTransactions', response.data)
+                context.commit('setHospital', response.data)
+                resolve(response.data)
+            })
+            .catch(error => {
+                reject(error)
+            })
+        }) 
+    },
+    storeHospital(context, payload) {
+        return new Promise((resolve, reject) => {
+            axios.post(`/api/hospitals`, payload)
+            .then(response => {
+                context.commit('pushHospital', response.data)
                 resolve(response)
             })
             .catch(error => {
@@ -58,20 +75,29 @@ const actions = {
             })
         }) 
     },
-    addHospital(context, form){
+    updateHospital(context, payload) {
         return new Promise((resolve, reject) => {
-            console.log(form)
-            axios.post('/api/hospital', form)
+            axios.put(`/api/hospitals/${payload.id}`, payload)
             .then(response => {
-                //context.state.products.push(response.data.responseData);
-                context.commit('pushHospital' , response.data)
+                context.commit('updateHospital', response.data)
                 resolve(response)
             })
             .catch(error => {
-                console.log(error)
                 reject(error)
             })
-        })
+        }) 
+    },
+    deleteHospital(context, id) {
+        return new Promise((resolve, reject) => {
+            axios.delete(`/api/hospitals/${id}`)
+            .then(response => {
+                context.commit('deleteHospital', id)
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+        }) 
     },
 };
 

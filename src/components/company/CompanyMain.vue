@@ -1,14 +1,14 @@
 <template>
     <v-row>
         <v-col cols="12">
-            Account Management
+            Company Management
         </v-col>
         <v-col cols="12">
             <v-card>
                 <v-card-title>
                 <v-btn @click="create" rounded outlined small color="primary">
                     <v-icon left>mdi-plus</v-icon>
-                    Create New Account
+                    Create New Company
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-text-field
@@ -21,31 +21,14 @@
                 </v-card-title>
                 <v-data-table
                 :headers="headers"
-                :items="accounts"
+                :items="companies"
                 :search="search"
                 :loading="loading"
                 :footer-props="{ 'items-per-page-options': [15, 25, 50, 100]}"
                 :server-items-length="totalRows"
                 :options.sync="pagination"
                 >
-                <template v-slot:item.active="{ item }">
-                    <v-chip v-if="item.active" class="overline white--text green" small>Online</v-chip>
-                    <v-chip v-else class="overline" small>Offline</v-chip>
-                </template>
-                <template v-slot:item.donor_gender="{ item }">
-                    <v-chip class="overline" small :color="getColor(item)" dark>{{item.gender}}</v-chip>
-                </template>
-                <template v-slot:item.age="{ item }">
-                    <v-chip class="overline" small>{{calculateAge(item.birthday)}}</v-chip>
-                </template>
-                <template v-slot:item.approved="{ item }">
-                    <v-chip class="overline" :color="item.pivot.approved=='1'? 'green' : 'red'" small dark>{{item.pivot.approved=='1'? 'Yes' : 'No'}}</v-chip>
-                </template>
-                <template v-slot:item.points="{ item }">
-                    {{item.points}}
-                </template>
-        
-                <template v-slot:item.joined_at="{ item }">
+                <template v-slot:item.created_at="{ item }">
                     {{moment(item.created_at).format('LLL')}}
                 </template>
                 <template v-slot:item.action="{ item }">
@@ -55,7 +38,7 @@
                                 <v-icon small>mdi-pencil</v-icon>
                             </v-btn>
                         </template>
-                        <span>Edit Account</span>
+                        <span>Edit Company</span>
                     </v-tooltip>
                     <v-tooltip top>
                         <template v-slot:activator="{ on }">
@@ -63,7 +46,7 @@
                                 <v-icon small>mdi-delete</v-icon>
                             </v-btn>
                         </template>
-                        <span>Delete Account</span>
+                        <span>Delete Company</span>
                     </v-tooltip>
                 </template>
                 </v-data-table>
@@ -99,18 +82,11 @@ import _ from "lodash";
         pagination: {},
         rowsPerPageItems: [5, 10, 20, 50, 100],
         headers: [
-          { text: 'Name', value: 'name' },
-          { text: 'Status', value: 'active' },
-          { text: 'Blood Type', value: 'blood_type' },
-          { text: 'Gender', value: 'donor_gender' },
-          { text: 'Age', value: 'age' },
-          { text: 'Email', value: 'email' },
-          { text: 'Number', value: 'mobile_number' },
-          { text: 'Donations', value: 'my_donations_count' },
-          { text: 'Requests', value: 'my_requests_count' },
-          { text: 'Joined Events', value: 'joinedevents_count' },
-          { text: 'Points', value: 'points' },
-          { text: 'Joined At', value: 'joined_at' },
+          { text: 'Company Name', value: 'company_name' },
+          { text: 'Company Address', value: 'company_address' },
+          { text: 'Accounts', value: 'users_count' },
+          { text: 'Hospitals', value: 'hospitals_count' },
+          { text: 'Created At', value: 'created_at' },
           { text: 'Action', value: 'action' },
         ],
       }
@@ -138,20 +114,13 @@ import _ from "lodash";
     },
     methods: {
         create() {
-            bus.$emit('createAccount')
+            bus.$emit('createCompany')
         },
         update(item) {
-            bus.$emit('updateAccount', item)
+            bus.$emit('updateCompany', item)
         },
         remove(item) {
-            bus.$emit('deleteAccount', item)
-        },
-        getColor(item) {
-            if (item.gender == 'male') {
-                return 'blue'
-            } else {
-                return 'pink'
-            }
+            bus.$emit('deleteCompany', item)
         },
         getDataFromApi() {
             this.loading = true
@@ -166,27 +135,16 @@ import _ from "lodash";
                 sort_order: this.pagination.sortDesc[0]? 'desc' : 'asc',
             }
 
-            this.$store.dispatch('retrieveAccounts', params)
+            this.$store.dispatch('retrieveCompanies', params)
                 .then(res => {
                     this.loading = false
                 })
-        },
-        calculateAge(birthday) { // birthday is a date
-            var today = new Date();
-            var birthDate = new Date(birthday);
-            var age = today.getFullYear() - birthDate.getFullYear();
-            var m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
-            {
-                age--;
-            }
-            return age;
         }
     },
     computed:{
     ...mapGetters({
-        accounts:'retrieveAccounts',
-        totalRows: 'retrieveTotalAccounts'
+        companies:'retrieveCompanies',
+        totalRows: 'retrieveTotalCompanies'
       }),
     },
   }

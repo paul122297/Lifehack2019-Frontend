@@ -1,110 +1,93 @@
 <template>
-<v-layout wrap>
-    <v-flex lg12>
-          <v-layout>
-            <v-flex lg9 class="ma-3">
-              Hospital Management
-            </v-flex>
-          </v-layout>
-
-  <v-card>
-    <v-card-title>
-        <create class="ml-2"></create>
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="retrieveHospitals"
-      :loading="loading"
-      class="elevation-1"
-    >
-        <template v-slot:item.count="{ item }">
-            {{item.products.length}}
-        </template>
-        <template v-slot:item.action="{ item }">
-          <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                    <v-btn @click="viewHospital(item)" color="green"  text fab small dark v-on="on">
-                        <v-icon small>mdi-eye</v-icon>
-                    </v-btn>
+    <v-row>
+        <v-col cols="12">
+            Hospital Management
+        </v-col>
+        <v-col cols="12">
+            <v-card>
+                <v-card-title>
+                <v-btn @click="create" rounded outlined small color="primary">
+                    <v-icon left>mdi-plus</v-icon>
+                    Create New Hospital
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                ></v-text-field>
+                </v-card-title>
+                <v-data-table
+                :headers="headers"
+                :items="hospitals"
+                :search="search"
+                :loading="loading"
+                :footer-props="{ 'items-per-page-options': [15, 25, 50, 100]}"
+                :server-items-length="totalRows"
+                :options.sync="pagination"
+                >
+                <template v-slot:item.created_at="{ item }">
+                    {{moment(item.created_at).format('LLL')}}
                 </template>
-                <span>View Event</span>
-            </v-tooltip>
-            <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                    <v-btn @click="updateEvent(item)" color="blue"  text fab small dark v-on="on">
-                        <v-icon small>mdi-pencil</v-icon>
-                    </v-btn>
+                <template v-slot:item.action="{ item }">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                            <v-btn @click="update(item)" color="green" rounded outlined x-small v-on="on">
+                                <v-icon small>mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Edit Hospital</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                            <v-btn class="ml-1" @click="remove(item)" color="primary" rounded outlined x-small v-on="on">
+                                <v-icon small>mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Delete Hospital</span>
+                    </v-tooltip>
                 </template>
-                <span>Edit Event</span>
-            </v-tooltip>
-            <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                    <v-btn @click="deleteEvent(item)" color="red"  text fab small dark v-on="on">
-                        <v-icon small>delete</v-icon>
-                    </v-btn>
-                </template>
-                <span>Delete Event</span>
-            </v-tooltip>
-        </template>
-    
-            <template v-slot:item.count="{ item }">
-                <v-chip small >{{item.transactions.length}}</v-chip>
-            </template>
-            <template v-slot:item.created_at="{ item }">
-                {{moment(item.created_at).format('LLL')}}
-            </template>
-            <template v-slot:no-results>
-            <v-alert :value="true" color="error" icon="warning">
-            Your search for "{{ search }}" found no results.
-            </v-alert>
-        </template>
-        </v-data-table>
-    </v-card>
-    </v-flex>
-    <ViewEvent/>
-  </v-layout>
+                </v-data-table>
+            </v-card>
+        </v-col>
+        <Create/>
+        <Update/>
+        <Delete/>
+    </v-row>
 </template>
 <script>
-/* eslint-disable */
+import bus from '../../event_bus'
 import Create from './options/Create'
-import ViewEvent from './options/View'
-import bus from '../../event_bus.js'
+import Update from './options/Update'
+import Delete from './options/Delete'
 import { mapGetters } from 'vuex'
 var moment = require('moment')
+import _ from "lodash";
   export default {
     components: {
         Create,
-        ViewEvent
-      },
+        Update,
+        Delete
+    },
     data () {
       return {
         moment:moment,
-        group_by: 'All',
+        snackbar: false,
+        dialog: false,
+        form: {},
+        loading: false,
         search: '',
-        totalRows: 0,
-        items: [
-            { title: 'Edit' },
-            { title: 'Delete' }
-        ],
-        loading: true,
         pagination: {},
-        headers: [
-          // { text: 'Media', value: 'media', align: 'center'},
-          { text: 'Hospital Name', value: 'name', align: 'center'},
-          { text: 'Address', value: 'address', align: 'center'},
-          { text: 'Transaction Count', value: 'count', align: 'center'},
-          { text: 'Created At', value: 'created_at', align: 'center'},
-          { text: 'Actions', value: 'action', align: 'center', sortable: false}
-        ],
         rowsPerPageItems: [5, 10, 20, 50, 100],
+        headers: [
+          { text: 'Hospital Name', value: 'name' },
+          { text: 'Hospital Address', value: 'address' },
+          { text: 'Transactions', value: 'transactions_count' },
+          { text: 'Created At', value: 'created_at' },
+          { text: 'Action', value: 'action' },
+        ],
       }
     },
     watch: {
@@ -114,52 +97,54 @@ var moment = require('moment')
         },
         deep: true
       },
-      search: {
-        handler () {
-          this.getDataFromApi()
+      search: _.debounce(
+        function() {
+            this.getDataFromApi();
         },
-        deep: true
-      },
-      group_by: {
-        handler () {
-          this.getDataFromApi()
-        },
-        deep: true
-      }
+        800,
+        {
+            leading: true,
+            trailing: true
+        }
+      ),
     },
     mounted () {
-      this.getDataFromApi()
+        this.getDataFromApi()
     },
     methods: {
-      viewHospital(item) {
-        bus.$emit('viewHospital', item)
-      },
-      updateEvent(item) {
-          bus.$emit('editEvent', item)
-      },
-      deleteEvent(item) {
-          bus.$emit('EventDelete', item)
-      },
-      getColor(item) {
-          if (item.status == 'active') {
-              return 'success'
-          } else {
-              return 'red'
-          }
-      },
-      getDataFromApi () {
-          this.loading = true
-          this.$store.dispatch('retrieveHospitals')
-              .then((response) => {
-                this.loading = false
-              })
+        create() {
+            bus.$emit('createHospital')
         },
+        update(item) {
+            bus.$emit('updateHospital', item)
+        },
+        remove(item) {
+            bus.$emit('deleteHospital', item)
+        },
+        getDataFromApi() {
+            this.loading = true
+            const { sortBy, descending, page, itemsPerPage } = this.pagination
+        
+            this.loading = true
+            let params = {
+                search: this.search,
+                page: this.pagination.page,
+                per_page: this.pagination.itemsPerPage,
+                sort_by: this.pagination.sortBy[0],
+                sort_order: this.pagination.sortDesc[0]? 'desc' : 'asc',
+            }
+
+            this.$store.dispatch('retrieveHospitals', params)
+                .then(res => {
+                    this.loading = false
+                })
+        }
     },
     computed:{
     ...mapGetters({
-        retrieveHospitals:'retrieveHospitals'
+        hospitals:'retrieveHospitals',
+        totalRows: 'retrieveTotalHospitals'
       }),
     },
   }
 </script>
-

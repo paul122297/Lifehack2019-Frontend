@@ -58,9 +58,11 @@ export default {
             mini: false,
             navigations: [
                 {name: 'Dashboard', icon: 'dashboard', route: 'dashboard'},
+                {name: 'Company', icon: 'mdi-office-building', route: 'companies'},
+                {name: 'Hospital', icon: 'mdi-hospital-building', route: 'hospitals'},
                 {name: 'Accounts', icon: 'people', route: 'accounts'},
                 {name: 'Events', icon: 'mdi-calendar-multiple-check', route: 'events'},
-                {name: 'Hospital', icon: 'mdi-hospital-building', route: 'hospitals'},
+                {name: 'Map', icon: 'mdi-map', route: 'map'},
             ],
         }
     },

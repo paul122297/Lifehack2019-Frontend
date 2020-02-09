@@ -39,7 +39,7 @@
                         required
                     ></v-text-field>
                 </v-col>
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                     <vuetify-google-autocomplete
                         ref="address"
                         id="map"
@@ -49,7 +49,7 @@
                         country="ph"
                     >
                     </vuetify-google-autocomplete>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12">
                   <v-date-picker
                       v-model="date"
@@ -82,15 +82,11 @@
 </template>
 <script>
   import Vue from 'vue';
-  import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
   import VeeValidate from 'vee-validate'
   import bus from '../../../event_bus'
   import { VTextField } from 'vuetify/lib';
   Vue.component('v-text-field', VTextField);
   Vue.use(VeeValidate)
-  Vue.use(VuetifyGoogleAutocomplete, {
-    apiKey: 'AIzaSyBsEpe2srTqmzw9pSLJap0WXJY6t70oZR8', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
-  })
   export default {
     components: {
         VTextField
@@ -133,15 +129,15 @@
     },
     methods: {
 
-    getAddressData: function (addressData, placeResultData, id) {
-        //this.address = addressData;
-        if (placeResultData&&addressData) {
-          this.form.lat = addressData.latitude
-          this.form.long = addressData.longitude
-          this.form.address = placeResultData.formatted_address
-      }
+    // getAddressData: function (addressData, placeResultData, id) {
+    //     //this.address = addressData;
+    //     if (placeResultData&&addressData) {
+    //       this.form.lat = addressData.latitude
+    //       this.form.long = addressData.longitude
+    //       this.form.address = placeResultData.formatted_address
+    //   }
         
-    },
+    // },
 
       closeDialog() {
         this.dialog = false

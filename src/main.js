@@ -9,10 +9,21 @@ import axios from 'axios'
 
 Vue.config.productionTip = false
 
+import * as VueGoogleMaps from 'vue2-google-maps'
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyBsEpe2srTqmzw9pSLJap0WXJY6t70oZR8',
+    libraries: 'places', // This is required if you use the Autocomplete plugin
+  },
+  installComponents: true
+})
+
 //const API_ORIGIN_ENDPOINT = 'appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com'
+const API_ORIGIN_ENDPOINT = 'blood-bank-backend.test'
 
 //axios.defaults.baseURL = 'http://blood-bank-backend.test/'
-axios.defaults.baseURL = `http://appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com/`
+axios.defaults.baseURL = `http://${API_ORIGIN_ENDPOINT}/`
 
 initialize(store, router, axios);
 
@@ -21,13 +32,13 @@ import Echo from 'laravel-echo'
 window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
-  authEndpoint: 'http://appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com/broadcasting/auth',
+  authEndpoint: `http://${API_ORIGIN_ENDPOINT}/broadcasting/auth`,
   //authEndpoint: 'http://blood-bank-backend.test/broadcasting/auth',
   broadcaster: 'pusher',
   key: 'bloodbankpusheridkey',
   cluster: 'mt1',
   //encrypted: false,
-  wsHost: 'appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com',
+  wsHost: API_ORIGIN_ENDPOINT,
   //wsHost: window.location.hostname,
   wsPort: 6001,
   disableStats: true,

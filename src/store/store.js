@@ -8,6 +8,7 @@ import EventModule from './modules/event'
 import HospitalModule from './modules/hospital'
 import ChatModule from './modules/chats'
 import AccountModule from './modules/accounts'
+import CompanyModule from './modules/company'
 
 export default new Vuex.Store({
   state: {},
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     event: EventModule,
     hospital: HospitalModule,
     chat: ChatModule,
-    accounts: AccountModule
+    accounts: AccountModule,
+    company: CompanyModule
   }
 })

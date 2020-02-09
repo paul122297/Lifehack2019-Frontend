@@ -21,7 +21,8 @@
     <v-dialog v-model="dialog" scrollable persistent max-width="700px">
       <v-card>
         <v-card-title>
-          Create New Hospital
+          Update Hospital
+          <v-switch v-model="changeAddress" class="mx-2" label="Change Address"></v-switch>
           <v-spacer></v-spacer>
           <v-btn small fab icon @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
@@ -34,7 +35,7 @@
         <v-card-text>
           <v-container>
             <v-row>
-                <v-col cols="12">
+              <v-col cols="12">
                   <p class="mb-n1 font-weight-bold">Company</p>
                   <v-autocomplete
                       :loading="companyLoading"
@@ -50,7 +51,7 @@
                       item-value="id"
                   ></v-autocomplete>
                 </v-col>
-                <v-col cols="12" class="mt-n5">
+                <v-col cols="12">
                     <p class="mb-n1 font-weight-bold">Hospital Name</p>
                     <v-text-field
                         solo
@@ -62,8 +63,8 @@
                         required
                     ></v-text-field>
                 </v-col>
-                <v-col cols="12" class="mt-n5">
-                  <p class="mb-n1 font-weight-bold">Hospital Address</p>    
+                <v-col cols="12" class="mt-n5" v-if="changeAddress">
+                  <p class="mb-n1 font-weight-bold">New Hospital Address</p>    
                   <div class="v-input theme--light v-text-field v-text-field--single-line v-text-field--solo v-text-field--is-booted v-text-field--enclosed">
                       <div class="v-input__control">
                           <div class="v-input__slot">
@@ -78,6 +79,15 @@
                         </div>
                       </div>
                   </div>
+                </v-col>
+                <v-col cols="12" class="mt-n5" v-else>
+                  <p class="mb-n1 font-weight-bold">Hospital Address <span class="overline">(Read only)</span> </p>
+                    <v-text-field
+                        solo
+                        v-model="form.address"
+                        readonly
+                        required
+                    ></v-text-field>
                 </v-col>
             </v-row>
           </v-container>
@@ -96,6 +106,7 @@
   import bus from '../../../event_bus'
   import { mapGetters } from 'vuex'
   Vue.use(VeeValidate)
+
   export default {
     $_veeValidate: {
       validator: 'new',
@@ -107,6 +118,7 @@
             color: 'success',
             loading: false,
             dialog: false,
+            time: null,
             companyLoading: false,
             form: {
               company_id: 0,
@@ -115,12 +127,14 @@
               lat: 0,
               long: 0
             },
+            changeAddress: false
         }
     },
     mounted () {
       this.$validator.localize('en', this.dictionary)
-        bus.$on('createHospital', (value) => {
+      bus.$on('updateHospital', (value) => {
         this.dialog = true
+        this.getHospital(value)
         this.getCompanies()
       })
     },
@@ -145,18 +159,27 @@
           this.form.long = center.lng
           console.log(this.form)
       },
+      getHospital(item) {
+        this.loading = true
+        this.$store.dispatch('retrieveHospital', item.id)
+          .then(response => {
+            this.form = response
+            this.loading = false
+          })
+      },
       closeDialog() {
         this.dialog = false
         this.loading = false
         this.loading = false
         this.form = {}
         this.$validator.reset()
+        this.changeAddress = false
       },
         submit() {
           this.$validator.validateAll()
             .then(res => {
               if (res) {
-                if (this.form.address == '') {
+                if (this.form.address == ''&&this.changeAddress) {
                   this.snackbar = true
                   this.msg = 'Please enter a location'
                   this.color = 'error'
@@ -168,10 +191,10 @@
         },
         submitHospital(){
           this.loading = true
-            this.$store.dispatch('storeHospital', this.form)
+            this.$store.dispatch('updateHospital', this.form)
                 .then((response) => {
                     this.snackbar = true
-                    this.msg = 'Hospital Successfully Created'
+                    this.msg = 'Company Successfully Updated'
                     this.color = 'success'
                     this.closeDialog()
                 }).catch(error => {

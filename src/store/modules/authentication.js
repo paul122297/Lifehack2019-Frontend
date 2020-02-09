@@ -56,7 +56,7 @@ const actions = {
         destroyToken(context, credentials){
           if(context.getters.loggedIn) {
             return new Promise((resolve, reject) => {
-            context.dispatch('accountOffline', context.state.currentUser.id)
+            context.dispatch('accountOffline', JSON.parse(context.getters.currentUser).id)
             .then(res => {
                     axios.post('/api/logout', credentials)
                     .then(response => {
@@ -75,6 +75,14 @@ const actions = {
                         context.commit('destroyUser')
                         reject(error)
                     })
+                })
+                .catch(error => {
+                    localStorage.removeItem('access_token')
+                    context.commit('destroyToken')
+
+                    localStorage.removeItem('current_user')
+                    context.commit('destroyUser')
+                    reject(error)
                 })
             })
           }

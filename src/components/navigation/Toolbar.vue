@@ -1,8 +1,9 @@
 <template>
-    <v-app-bar class="primary" dense clipped-left app>
+    <v-app-bar :id="$vuetify.theme.dark? 'backgroundThemeDark' : 'backgroundTheme'" dense clipped-left app>
       <v-app-bar-nav-icon text color="white"
         v-if="primaryDrawer.type !== 'permanent'"
         @click.stop="drawerOpen"
+        
       >
       <v-icon>menu</v-icon>
       </v-app-bar-nav-icon>
@@ -13,8 +14,8 @@
           <v-img class="drawer-logo mt-2" width="150" src="../img/Expee-Logo-Reversed.png"/>
       </v-toolbar-title> -->
         <v-spacer></v-spacer>
-        <v-btn color="white" text small fab @click="$vuetify.theme.dark = !$vuetify.theme.dark"><v-icon small>brightness_medium</v-icon> </v-btn>
-        <v-btn color="white" text small fab @click="logout"> <v-icon small>power_settings_new</v-icon> </v-btn>
+        <v-btn text small fab @click="$vuetify.theme.dark = !$vuetify.theme.dark"><v-icon small>brightness_medium</v-icon> </v-btn>
+        <v-btn text small fab @click="logout"> <v-icon small>power_settings_new</v-icon> </v-btn>
     </v-app-bar>
 </template>
 <script>
@@ -42,6 +43,9 @@ export default {
             this.$store.dispatch('destroyToken')
               .then(response => {
                   this.$router.push({path: '/'});
+              })
+              .catch(error => {
+                  this.$router.push({path: '/'});
               });
       }
     },
@@ -62,4 +66,14 @@ export default {
     color: #2196f3 !important;
     caret-color: #2196f3 !important;
 }
+  #backgroundTheme {
+    background: #D32F2FB2;
+    background: -webkit-linear-gradient(to right, #D32F2FB2, #EF9A9AB2);
+    background: linear-gradient(to right, #D32F2FB2, #EF9A9AB2);
+  }
+  #backgroundThemeDark {
+    background: #EF5350B2;
+    background: -webkit-linear-gradient(to right, #EF5350B2, #EF9A9AB2);
+    background: linear-gradient(to right, #EF5350B2, #EF9A9AB2);
+  }
 </style>

@@ -21,7 +21,8 @@
     <v-dialog v-model="dialog" scrollable persistent max-width="700px">
       <v-card>
         <v-card-title>
-          Create New Hospital
+          Update Company
+          <v-switch v-model="changeAddress" class="mx-2" label="Change Address"></v-switch>
           <v-spacer></v-spacer>
           <v-btn small fab icon @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
@@ -35,35 +36,19 @@
           <v-container>
             <v-row>
                 <v-col cols="12">
-                  <p class="mb-n1 font-weight-bold">Company</p>
-                  <v-autocomplete
-                      :loading="companyLoading"
-                      solo
-                      v-model="form.company_id"
-                      v-validate="'required'"
-                      :error-messages="errors.collect('company')"
-                      label="Select a Company"
-                      data-vv-name="company"
-                      required
-                      :items="companies"
-                      item-text="name"
-                      item-value="id"
-                  ></v-autocomplete>
-                </v-col>
-                <v-col cols="12" class="mt-n5">
-                    <p class="mb-n1 font-weight-bold">Hospital Name</p>
+                    <p class="mb-n1 font-weight-bold">Company Name</p>
                     <v-text-field
                         solo
-                        v-model="form.name"
+                        v-model="form.company_name"
                         v-validate="'required'"
                         :error-messages="errors.collect('name')"
-                        label="Enter Hospital Name"
+                        label="Enter Company Name"
                         data-vv-name="name"
                         required
                     ></v-text-field>
                 </v-col>
-                <v-col cols="12" class="mt-n5">
-                  <p class="mb-n1 font-weight-bold">Hospital Address</p>    
+                <v-col cols="12" class="mt-n5" v-if="changeAddress">
+                  <p class="mb-n1 font-weight-bold">New Company Address</p>    
                   <div class="v-input theme--light v-text-field v-text-field--single-line v-text-field--solo v-text-field--is-booted v-text-field--enclosed">
                       <div class="v-input__control">
                           <div class="v-input__slot">
@@ -79,12 +64,22 @@
                       </div>
                   </div>
                 </v-col>
+                <v-col cols="12" class="mt-n5" v-else>
+                  <p class="mb-n1 font-weight-bold">Company Address <span class="overline">(Read only)</span> </p>
+                    <v-text-field
+                        solo
+                        v-model="form.company_address"
+                        label="Enter Company Name"
+                        readonly
+                        required
+                    ></v-text-field>
+                </v-col>
             </v-row>
           </v-container>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn color="primary" :loading="loading" block outlined rounded small @click="submit">Save Hospital</v-btn>
+          <v-btn color="primary" :loading="loading" block outlined rounded small @click="submit">Save Company</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -94,56 +89,53 @@
   import Vue from 'vue';
   import VeeValidate from 'vee-validate'
   import bus from '../../../event_bus'
-  import { mapGetters } from 'vuex'
   Vue.use(VeeValidate)
+
   export default {
     $_veeValidate: {
       validator: 'new',
     },
     data() {
         return {
+            chagePassword: false,
             snackbar: false,
             msg: '',
             color: 'success',
             loading: false,
             dialog: false,
-            companyLoading: false,
-            form: {
-              company_id: 0,
-              name: '',
-              address: '',
-              lat: 0,
-              long: 0
-            },
+            time: null,
+            form: {},
+            changeAddress: false
         }
     },
     mounted () {
       this.$validator.localize('en', this.dictionary)
-        bus.$on('createHospital', (value) => {
+      bus.$on('updateCompany', (value) => {
         this.dialog = true
-        this.getCompanies()
+        this.getCompany(value)
       })
     },
     methods: {
-      getCompanies() {
-        this.companyLoading = true
-        this.$store.dispatch('retrieveAllCompanies')
-          .then(res => {
-            this.companyLoading = false
-          })
-      },
       getPlace(place) {
         let center = {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng()
         };
-          if (this.form.name == '') {
-            this.form.name = place.name
+          if (this.form.company_name == '') {
+            this.form.company_name = place.name
           }
-          this.form.address = place.formatted_address
+          this.form.company_address = place.formatted_address
           this.form.lat = center.lat
           this.form.long = center.lng
           console.log(this.form)
+      },
+      getCompany(item) {
+        this.loading = true
+        this.$store.dispatch('retrieveCompany', item.id)
+          .then(response => {
+            this.form = response
+            this.loading = false
+          })
       },
       closeDialog() {
         this.dialog = false
@@ -151,27 +143,28 @@
         this.loading = false
         this.form = {}
         this.$validator.reset()
+        this.changeAddress = false
       },
         submit() {
           this.$validator.validateAll()
             .then(res => {
               if (res) {
-                if (this.form.address == '') {
+                if (this.form.company_address == ''&&this.changeAddress) {
                   this.snackbar = true
                   this.msg = 'Please enter a location'
                   this.color = 'error'
                 } else {
-                  this.submitHospital()
+                  this.submitCompany()
                 }
               }
             })
         },
-        submitHospital(){
+        submitCompany(){
           this.loading = true
-            this.$store.dispatch('storeHospital', this.form)
+            this.$store.dispatch('updateCompany', this.form)
                 .then((response) => {
                     this.snackbar = true
-                    this.msg = 'Hospital Successfully Created'
+                    this.msg = 'Company Successfully Updated'
                     this.color = 'success'
                     this.closeDialog()
                 }).catch(error => {
@@ -182,11 +175,6 @@
                     this.loading = false
                 })
         },
-    },
-    computed:{
-    ...mapGetters({
-        companies:'retrieveAllCompanies'
-      }),
-    },
+    }
   }
 </script>
