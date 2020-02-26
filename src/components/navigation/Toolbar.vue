@@ -35,6 +35,12 @@ export default {
         }
     },
 
+  created() {
+    var userId = this.currentUser.id;
+    window.Echo.private('App.User.'+ userId).notification((response) => {
+      console.log(response)
+    });
+  },
     methods: {
         drawerOpen(){
             bus.$emit('drawerOpen', true)

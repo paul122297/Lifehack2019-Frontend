@@ -22,7 +22,6 @@ Vue.use(VueGoogleMaps, {
 //const API_ORIGIN_ENDPOINT = 'appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com'
 const API_ORIGIN_ENDPOINT = 'blood-bank-backend.test'
 
-//axios.defaults.baseURL = 'http://blood-bank-backend.test/'
 axios.defaults.baseURL = `http://${API_ORIGIN_ENDPOINT}/`
 
 initialize(store, router, axios);
@@ -33,13 +32,11 @@ window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
   authEndpoint: `http://${API_ORIGIN_ENDPOINT}/broadcasting/auth`,
-  //authEndpoint: 'http://blood-bank-backend.test/broadcasting/auth',
   broadcaster: 'pusher',
   key: 'bloodbankpusheridkey',
   cluster: 'mt1',
   //encrypted: false,
   wsHost: API_ORIGIN_ENDPOINT,
-  //wsHost: window.location.hostname,
   wsPort: 6001,
   disableStats: true,
   //enabledTransports: ['ws']

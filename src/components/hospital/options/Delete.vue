@@ -28,17 +28,17 @@
         <v-card-text>
           <v-row>
             <v-col cols="12">
-              Are you sure you want to delete this company? If you delete this company all the data and transactions under this company will be deleted.
+              Are you sure you want to delete this hospital? If you delete this hospital all the data and transactions under this hospital will be deleted.
             </v-col>
             <v-col cols="12" class="mt-n4">
               <v-text-field
                   solo
                   dense
-                  v-model="company_name"
+                  v-model="name"
                   v-validate="'required'"
-                  :error-messages="errors.collect('name')"
-                  label="Enter company name to confirm"
-                  data-vv-name="name"
+                  :error-messages="errors.collect('hospital name')"
+                  label="Enter hospital name to confirm"
+                  data-vv-name="hospital name"
                   required
               ></v-text-field>
             </v-col>
@@ -74,8 +74,8 @@ import bus from '../../../event_bus'
 export default {
     data () {
       return {
-        company_name_data: '',
-        company_name: '',
+        name_data: '',
+        name: '',
         snackbar: false,
         dialog: false,
         id: 0,
@@ -86,11 +86,10 @@ export default {
     },
     created() {
         var vm = this
-        bus.$on('deleteCompany', function (value) {
+        bus.$on('deleteHospital', function (value) {
             vm.dialog = true
             vm.id = value.id
-            vm.company_name_data = value.company_name
-            console.log(vm.company_name_data)
+            vm.name_data = value.name
         })
     },
     methods: {
@@ -99,23 +98,21 @@ export default {
             .then(res => {
               if (res) {
                 
-                if (this.company_name_data == this.company_name) {
-                  console.log('input', this.company_name)
-                  console.log('data', this.company_name_data)
-                  this.deleteCompany()
+                if (this.name_data == this.name) {
+                  this.deleteHospital()
                 } else {
                   this.snackbar = true
-                  this.msg = 'Company name does not match'
+                  this.msg = 'Hospital name does not match'
                   this.color = 'error'
                 }
               }
             })
         },
-        deleteCompany() {
+        deleteHospital() {
           this.loading = true
-            this.$store.dispatch('deleteCompany', this.id).then((res) => {
+            this.$store.dispatch('deleteHospital', this.id).then((res) => {
                 this.dialog = false
-                this.msg = 'Company Successfully Deleted'
+                this.msg = 'Hospital Successfully Deleted'
                 this.color = 'success'
                 this.snackbar = true
                 this.loading = false

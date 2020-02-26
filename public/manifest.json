@@ -1,6 +1,6 @@
 {
-  "name": "cd-barrera-frontend",
-  "short_name": "cd-barrera-frontend",
+  "name": "AppCon2020 BloodBank",
+  "short_name": "AppCon2020",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
