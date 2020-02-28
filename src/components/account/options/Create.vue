@@ -58,7 +58,7 @@
                         required
                     ></v-text-field>
                 </v-col>
-                <v-col cols="6" class="mt-n5">
+                <v-col cols="12" class="mt-n5">
                     <p class="mb-n1 font-weight-bold">Mobile Number</p>
                     <v-text-field
                         solo
@@ -71,6 +71,22 @@
                         required
                     ></v-text-field>
                 </v-col>
+                <v-col cols="6" class="mt-n5">
+                    <p class="mb-n1 font-weight-bold">Account Type</p>
+                    <v-select
+                        v-validate="'required'"
+                        :error-messages="errors.collect('account type')"
+                        data-vv-name="account type"
+                        v-model="form.user_type" 
+                        :items="[{text: 'Company Admin', value: 'company_admin'}, {text: 'Hospital Admin', value: 'hospital_admin'}, {text: 'Staff', value: 'staff1'}]" 
+                        item-text="text"
+                        item-value="value"
+                        solo 
+                        label="Select Account Type" 
+                        required>
+                    </v-select>
+                </v-col>
+                
                 <v-col cols="6" class="mt-n5">
                     <p class="mb-n1 font-weight-bold">Gender</p>
                     <v-select

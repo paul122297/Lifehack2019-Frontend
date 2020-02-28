@@ -23,7 +23,10 @@ const mutations = {
     pushChat(state, payload) {
         state.chats.push(payload)
     },
-
+    addUnreadChat(state, payload) {
+        let updateIndex = state.friends.findIndex(item => item.id === payload.id);
+        state.friends[updateIndex].unread++
+    }
     // updateBrand(state, payload) {
     //     let updateIndex = state.events.findIndex(item => item.id === payload.id);
     //     Vue.set(state.events, updateIndex, payload)
@@ -46,11 +49,11 @@ const actions = {
             })
         }) 
     },
-    retrieveFriends(context){
+    retrieveFriends(context, params){
         return new Promise((resolve, reject) => {
-            axios.get(`/api/friends`)
+            axios.get(`/api/friends`, {params: params})
             .then(response => {
-                context.commit('retrieveFriends', response.data)
+                context.commit('retrieveFriends', response.data.data)
                 resolve(response)
             })
             .catch(error => {

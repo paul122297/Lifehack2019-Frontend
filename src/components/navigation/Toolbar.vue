@@ -14,8 +14,8 @@
           <v-img class="drawer-logo mt-2" width="150" src="../img/Expee-Logo-Reversed.png"/>
       </v-toolbar-title> -->
         <v-spacer></v-spacer>
-        <v-btn text small fab @click="$vuetify.theme.dark = !$vuetify.theme.dark"><v-icon small>brightness_medium</v-icon> </v-btn>
-        <v-btn text small fab @click="logout"> <v-icon small>power_settings_new</v-icon> </v-btn>
+        <v-btn text small fab color="grey darken-3" @click="$vuetify.theme.dark = !$vuetify.theme.dark"><v-icon small>brightness_medium</v-icon> </v-btn>
+        <v-btn text small fab color="grey darken-3" @click="logout"> <v-icon small>power_settings_new</v-icon> </v-btn>
     </v-app-bar>
 </template>
 <script>

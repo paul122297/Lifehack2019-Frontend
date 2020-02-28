@@ -33,7 +33,10 @@
                     </v-list-item-content>
 
                     <v-list-item-icon>
-                    <v-icon>chat_bubble</v-icon>
+                      <v-badge color="blue-grey darken-3 white--text" overlap right>
+                          <template v-slot:badge>{{item.unread}}</template>
+                          <v-icon>mdi-forum</v-icon>
+                      </v-badge>
                     </v-list-item-icon>
                 </v-list-item>
                 </v-list>
@@ -41,7 +44,7 @@
             </v-card>
         </v-col>
         <v-col cols="12" xl="9" lg="9" md="8" sm="12">
-            <v-card style="">
+            <v-card>
                 <v-toolbar flat>
                 <v-toolbar-title>{{selectedFriend.name? selectedFriend.name : 'Chat'}}</v-toolbar-title>
                 </v-toolbar>
@@ -87,7 +90,9 @@ export default {
       message: '',
       loading: false,
       status: false,
-      users: []
+      users: [],
+      search: '',
+      page: 1
     }),
   created() {
     this.listenChat()
@@ -101,8 +106,10 @@ export default {
           .listen('BroadcastChat', (e) => {
               if (e.chat.receiver_id == userId) {
                 this.$store.commit('pushChat', e.chat)
+                this.$store.commit('addUnreadChat', e.chat.user)
+                console.log('myChat', e)
               }
-              console.log(e)
+              
           })
         this.getFriends()
     },
@@ -133,7 +140,11 @@ export default {
     },
     getFriends(id) {
       this.loading = true
-      this.$store.dispatch('retrieveFriends')
+      let params = {
+        search: this.search? this.search : null,
+        page: this.page
+      }
+      this.$store.dispatch('retrieveFriends', params)
         .then(res => {
           this.loading = false
         })
@@ -143,6 +154,7 @@ export default {
       this.$store.dispatch('retrieveChats', id)
         .then(res => {
           this.loading = false
+          this.getFriends()
         })
     }
   },

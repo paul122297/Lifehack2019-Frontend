@@ -8,6 +8,9 @@ const getters = {
     loggedIn(state) {
         return state.token != null
     },
+    getToken(state) {
+        return state.token
+    },
     currentUser(state) {
         return state.currentUser
     },
