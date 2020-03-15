@@ -19,8 +19,8 @@ Vue.use(VueGoogleMaps, {
   installComponents: true
 })
 
-//const API_ORIGIN_ENDPOINT = 'appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com'
-const API_ORIGIN_ENDPOINT = 'blood-bank-backend.test'
+const API_ORIGIN_ENDPOINT = 'appcon2020-env.gwphp3mwkp.ap-southeast-1.elasticbeanstalk.com'
+//const API_ORIGIN_ENDPOINT = 'blood-bank-backend.test'
 
 axios.defaults.baseURL = `http://${API_ORIGIN_ENDPOINT}/`
 

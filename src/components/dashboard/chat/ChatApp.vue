@@ -109,7 +109,6 @@ export default {
                 this.$store.commit('addUnreadChat', e.chat.user)
                 console.log('myChat', e)
               }
-              
           })
         this.getFriends()
     },

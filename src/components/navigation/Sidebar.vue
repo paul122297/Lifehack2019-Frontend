@@ -61,7 +61,7 @@ export default {
                 {name: 'Company', icon: 'mdi-office-building', route: 'companies'},
                 {name: 'Hospital', icon: 'mdi-hospital-building', route: 'hospitals'},
                 {name: 'Accounts', icon: 'people', route: 'accounts'},
-                {name: 'Events', icon: 'mdi-calendar-multiple-check', route: 'events'},
+                //{name: 'Events', icon: 'mdi-calendar-multiple-check', route: 'events'},
                 {name: 'Map', icon: 'mdi-map', route: 'map'},
             ],
         }

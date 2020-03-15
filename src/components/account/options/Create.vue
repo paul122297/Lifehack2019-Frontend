@@ -71,14 +71,31 @@
                         required
                     ></v-text-field>
                 </v-col>
+                <v-col cols="12" class="mt-n5">
+                  <p class="mb-n1 font-weight-bold">Company</p>
+                  <v-autocomplete
+                      :loading="companyLoading"
+                      solo
+                      v-model="form.company_id"
+                      v-validate="'required'"
+                      :error-messages="errors.collect('company')"
+                      label="Select a Company"
+                      data-vv-name="company"
+                      required
+                      :items="companies"
+                      item-text="name"
+                      item-value="id"
+                  ></v-autocomplete>
+                </v-col>
                 <v-col cols="6" class="mt-n5">
                     <p class="mb-n1 font-weight-bold">Account Type</p>
                     <v-select
+                        readonly
                         v-validate="'required'"
                         :error-messages="errors.collect('account type')"
                         data-vv-name="account type"
                         v-model="form.user_type" 
-                        :items="[{text: 'Company Admin', value: 'company_admin'}, {text: 'Hospital Admin', value: 'hospital_admin'}, {text: 'Staff', value: 'staff1'}]" 
+                        :items="[{text: 'Company Admin', value: 'company_admin'}, {text: 'Staff', value: 'staff1'}]" 
                         item-text="text"
                         item-value="value"
                         solo 
@@ -189,6 +206,7 @@
   import Vue from 'vue';
   import VeeValidate from 'vee-validate'
   import bus from '../../../event_bus'
+    import { mapGetters } from 'vuex'
   Vue.use(VeeValidate)
 
   export default {
@@ -197,6 +215,7 @@
     },
     data() {
         return {
+            companyLoading: false,
             snackbar: false,
             msg: '',
             color: 'success',
@@ -208,13 +227,16 @@
             dialog: false,
             date: new Date().toISOString().substr(0, 10),
             time: null,
-            form: {},
+            form: {
+              user_type: 'company_admin'
+            },
         }
     },
     mounted () {
       this.$validator.localize('en', this.dictionary)
         bus.$on('createAccount', (value) => {
         this.dialog = true
+        this.getCompanies()
       })
       this.$validator.extend('verify_password', {
         getMessage: field => `The password must contain at least: 1 uppercase letter, 1 lowercase letter, 1 number, and one special character (E.g. , . _ & ? etc)`,
@@ -225,11 +247,20 @@
        });
     },
     methods: {
+      getCompanies() {
+        this.companyLoading = true
+        this.$store.dispatch('retrieveAllCompanies')
+          .then(res => {
+            this.companyLoading = false
+          })
+      },
       closeDialog() {
         this.dialog = false
         this.loading = false
         this.loading = false
-        this.form = {}
+        this.form = {
+          user_type: 'company_admin'
+        }
         this.$validator.reset()
       },
         submit() {
@@ -269,6 +300,12 @@
                     this.loading = false
                 })
         },
-    }
+    },
+    computed:{
+      ...mapGetters({
+        companies:'retrieveAllCompanies'
+      }),
+    },
+    
   }
 </script>

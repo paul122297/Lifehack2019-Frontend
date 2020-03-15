@@ -9,6 +9,7 @@ import HospitalModule from './modules/hospital'
 import ChatModule from './modules/chats'
 import AccountModule from './modules/accounts'
 import CompanyModule from './modules/company'
+import AnalyticsModule from './modules/Analytics'
 
 export default new Vuex.Store({
   state: {},
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     hospital: HospitalModule,
     chat: ChatModule,
     accounts: AccountModule,
-    company: CompanyModule
+    company: CompanyModule,
+    analytics: AnalyticsModule
   }
 })

@@ -5,42 +5,34 @@
     </v-flex>
     <v-flex lg12>
       <v-row>
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
-          <BarChart/>
+        <v-col cols="8">
+          <PerMonth/>
         </v-col>
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
-          <PieChart/>
+        <v-col cols="4">
+          <PerGender/>
         </v-col>
-        <v-col cols="12">
-          <ChatApp/>
+        <v-col cols="7">
+          <PerBloodType/>
+        </v-col>
+        <v-col cols="5">
+          <RequestCounts/>
         </v-col>
       </v-row>
     </v-flex>
   </v-layout>
 </template>
 <script>
-import BarChart from './charts/BarChart'
-import PieChart from './charts/PieChart'
-import ChatApp from './chat/ChatApp'
+import PerMonth from './analytics/Month'
+import PerGender from './analytics/Gender'
+import PerBloodType from './analytics/Transactions'
+import RequestCounts from './analytics/BloodRequest'
 export default {
   components: {
-    BarChart,
-    PieChart,
-    ChatApp
+    PerMonth,
+    PerGender,
+    PerBloodType,
+    RequestCounts
   },
-  // created() {//User_id.Reciever_id
-  //     window.Echo.channel('Chat.1.3')
-  //       .listen('BroadcastChat', (e) => {
-  //           console.log(e);
-  //           console.log('Success');
-  //       })
 
-  //     window.Echo.channel('blood-request.1.1')
-  //       .listen('ApprovedRequest', (e) => {
-  //           console.log(e);
-  //           console.log('Success');
-  //       })
-        
-  // }
 }
 </script>
